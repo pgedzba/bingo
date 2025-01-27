@@ -9,17 +9,17 @@ export const gameData = writable(null);
 
 let auth;
 if (browser) {
-  auth = getAuth();
-  auth.onAuthStateChanged((u) => {
-    user.set(u);
-  });
+	auth = getAuth();
+	auth.onAuthStateChanged((u) => {
+		user.set(u);
+	});
 
-  firebaseGameData.subscribe((data) => {
-    gameData.set(data);
-  });
+	firebaseGameData.subscribe((data) => {
+		gameData.set(data);
+	});
 }
 
 export async function logout() {
-  if (!auth) return;
-  await signOut(auth);
+	if (!auth) return;
+	await signOut(auth);
 }

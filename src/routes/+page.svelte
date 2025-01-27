@@ -1,20 +1,20 @@
 <script>
-  import { user } from '$lib/store';
-  import { loginWithGoogle } from '$lib/firebase';
+	import { user } from '$lib/store';
+	import { loginWithGoogle } from '$lib/firebase';
 </script>
 
 <div class="login-container">
-  <div class="description">
-    <h2>Welcome to Bingo Game</h2>
-    <p>A fun and interactive bingo game for everyone!</p>
-    <p>Developed by pgedzba</p>
-  </div>
+	<div class="description">
+		<h2>Welcome to Bingo Game</h2>
+		<p>A fun and interactive bingo game for everyone!</p>
+		<p>Developed by pgedzba</p>
+	</div>
 
-    {#if $user}
-      <p>Welcome, {$user.displayName}!</p>
-    {:else}
-      <button on:click="{loginWithGoogle}">Login with Google</button>
-    {/if}
+	{#if $user}
+		<p>Welcome, {$user.displayName}!</p>
+	{:else}
+		<button on:click={loginWithGoogle}>Login with Google</button>
+	{/if}
 </div>
 
 <style>
