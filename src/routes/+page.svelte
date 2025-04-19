@@ -34,6 +34,6 @@
 	}
 
 	.description h2 {
-		color: #00ff00;
+		color: var(--lemon-green);
 	}
 </style>

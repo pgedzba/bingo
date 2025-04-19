@@ -1,19 +1,24 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { logout, user } from '$lib/store';
 	import { goto } from '$app/navigation';
 
 	let isMenuOpen = false; // For mobile menu toggle
 	let currentUser = null; // Local variable for user
 	let isBrowser = false; // Flag to ensure client-side operations
+	let unsubscribe; // Store unsubscribe function for cleanup
 
 	// Run only in the browser
 	onMount(() => {
 		isBrowser = true;
-		//TODO: Unsubscribe
-		user.subscribe((u) => {
+		unsubscribe = user.subscribe((u) => {
 			currentUser = u;
 		});
+	});
+
+	// Clean up subscription when component is destroyed
+	onDestroy(() => {
+		if (unsubscribe) unsubscribe();
 	});
 
 	const handleLogout = () => {
@@ -73,23 +78,26 @@
 </nav>
 
 <style>
-	/* Styling as in your original code */
+	/* Using the new color variables */
 	.navbar {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background-color: #1f1f1f;
+		background-color: var(--dark-card);
 		padding: 1rem 2rem;
-		border-bottom: 2px solid #00ff00;
+		border-bottom: 2px solid var(--lemon-green);
 		position: sticky;
 		top: 0;
 		z-index: 10;
+		font-family: 'Montserrat', Arial, sans-serif;
 	}
 
 	.logo h1 {
 		margin: 0;
 		font-size: 1.8rem;
-		color: #00ff00;
+		color: var(--lemon-green);
+		font-weight: 700;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.6); /* Stronger glow for logo */
 	}
 
 	.logo a {
@@ -102,8 +110,9 @@
 		background: none;
 		border: none;
 		font-size: 1.5rem;
-		color: #00ff00;
+		color: var(--lemon-green);
 		cursor: pointer;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.4);
 	}
 
 	.nav-links {
@@ -119,13 +128,16 @@
 
 	.nav-links li a {
 		text-decoration: none;
-		color: #00ff00;
+		color: var(--lemon-green);
 		font-size: 1rem;
-		transition: color 0.3s ease;
+		font-weight: 500;
+		transition: all 0.3s ease;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.2); /* Subtle glow for nav links */
 	}
 
 	.nav-links li a:hover {
-		color: #ffffff;
+		color: var(--text-color);
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.5); /* Enhanced glow on hover */
 	}
 
 	.user-buttons {
@@ -143,12 +155,13 @@
 
 	.user-info span {
 		font-size: 0.9rem;
-		color: #d4ffd4;
+		color: var(--text-color);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 150px;
 		text-align: center;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.3); /* Subtle glow for username */
 	}
 
 	.icon-button {
@@ -163,26 +176,31 @@
 		height: 32px;
 		border-radius: 50%;
 		transition: background-color 0.3s ease;
-		color: #00ff00;
+		color: var(--lemon-green);
 	}
 
 	.icon-button:hover {
-		background-color: #2ecc71;
+		background-color: var(--lemon-green);
+		color: var(--dark-bg);
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.6);
 	}
 
 	.login {
-		background-color: #00ff00;
-		color: #121212;
+		background-color: var(--lemon-green);
+		color: var(--dark-bg);
 		border: none;
 		padding: 0.5rem 1rem;
 		border-radius: 5px;
 		font-size: 1rem;
+		font-weight: 600;
 		cursor: pointer;
-		transition: background-color 0.3s ease;
+		transition: all 0.3s ease;
 	}
 
 	.login:hover {
-		background-color: #27ae60;
+		background-color: #a0df1e;
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.8);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 	}
 
 	@media (max-width: 768px) {
@@ -194,14 +212,14 @@
 			display: none;
 			flex-direction: column;
 			align-items: center;
-			background-color: #1f1f1f;
+			background-color: var(--dark-card);
 			position: absolute;
 			top: 100%;
 			left: 0;
 			right: 0;
 			gap: 1rem;
 			padding: 1rem;
-			border-bottom: 2px solid #00ff00;
+			border-bottom: 2px solid var(--lemon-green);
 		}
 
 		.nav-links.open {

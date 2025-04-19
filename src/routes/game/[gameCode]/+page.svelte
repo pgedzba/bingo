@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { subscribeToGame, gameData, db, updateDoc, doc } from '$lib/firebase';
 	import { user } from '$lib/store';
-
-	// SvelteKit will auto-provide "params.gameCode"
-	// if we define a load function or simply use `export function load()`.
-	// Easiest is to define a load and pass it in as a prop:
+	import Loader from '../../components/Loader.svelte';
 
 	export let data;
 	const { gameCode } = data;
-	// Alternatively, define `export function load({ params }) { return { gameCode: params.gameCode }; }`
-	// Then in the <script> you can do `export let gameCode;`
 
 	let currentUser;
 	let player = null;
@@ -19,13 +14,19 @@
 	let gameState = null;
 	let bingoAchieved = false;
 	let spectatingPlayer = null;
+	let isLoading = true;
+	let unsubscribeGame; // For Firebase cleanup
 
 	$: user.subscribe((u) => {
 		currentUser = u;
 	});
 
 	onMount(() => {
-		subscribeToGame(gameCode);
+		unsubscribeGame = subscribeToGame(gameCode);
+	});
+
+	onDestroy(() => {
+		if (unsubscribeGame) unsubscribeGame();
 	});
 
 	// Watch for live changes to the game
@@ -34,6 +35,8 @@
 			gameState = null;
 			return;
 		}
+		
+		isLoading = false;
 		gameState = data;
 		if (!currentUser) return;
 
@@ -52,7 +55,8 @@
 	});
 
 	function toggleWord(word: string) {
-		if (spectatingPlayer) return; // Don’t allow toggling while spectating
+		if (spectatingPlayer) return; // Don't allow toggling while spectating
+		if (!currentUser) return; // Safety check
 
 		if (!crossedOut.includes(word)) {
 			crossedOut = [...crossedOut, word];
@@ -117,11 +121,18 @@
 </script>
 
 <div class="full-page-center">
-	<div class="centered-form">
+	<div class="centered-form game-container">
 		<h1>Game: {gameCode}</h1>
 
-		{#if board.length}
-			<h2>
+		{#if isLoading}
+			<Loader message="Loading game data..." />
+		{:else if !currentUser}
+			<div class="auth-error">
+				<p>Please log in to join this game.</p>
+				<a href="/">Go to login</a>
+			</div>
+		{:else if board.length}
+			<h2 class={spectatingPlayer ? 'spectating' : ''}>
 				{#if spectatingPlayer}
 					Spectating {spectatingPlayer.name}
 				{:else}
@@ -146,22 +157,27 @@
 			</div>
 
 			{#if bingoAchieved}
-				<p class="bingo">Bingo! 🎉</p>
+				<div class="bingo">
+					<p>Bingo! 🎉</p>
+					<div class="confetti"></div>
+				</div>
 			{/if}
 
 			{#if spectatingPlayer}
-				<button on:click={returnToOwnBoard} class="spectate-button"> Return to Your Board </button>
+				<button on:click={returnToOwnBoard} class="spectate-button"> 
+					Return to Your Board 
+				</button>
 			{/if}
 		{:else}
-			<p>Loading your bingo board...</p>
+			<p>No game board found. Please check the game code.</p>
 		{/if}
 
 		<div class="players-list">
-			<h2 style="text-align: center;">Players</h2>
-			{#if gameState}
+			<h2>Players</h2>
+			{#if gameState?.players?.length}
 				{#each gameState.players as otherPlayer}
 					<div class="player-item">
-						<span>
+						<span class={otherPlayer.id === currentUser?.uid ? 'current-player' : ''}>
 							{otherPlayer.name} ({otherPlayer.crossedOut?.length || 0}/{board.length})
 						</span>
 						{#if otherPlayer.id !== currentUser?.uid}
@@ -171,47 +187,106 @@
 						{/if}
 					</div>
 				{/each}
+			{:else}
+				<p>No players have joined this game yet.</p>
 			{/if}
 		</div>
 	</div>
 </div>
 
 <style>
+	.game-container {
+		max-width: 600px;
+	}
+	
+	h1, h2 {
+		color: var(--lemon-green);
+		font-family: 'Montserrat', Arial, sans-serif;
+		text-align: center;
+	}
+	
+	h1 {
+		font-weight: 700;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.5);
+	}
+	
+	h2 {
+		font-weight: 600;
+		margin-top: 1.5rem;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.3);
+	}
+
+	/* Add special glow for spectating mode */
+	h2.spectating {
+		text-shadow: 0 0 15px rgba(192, 255, 62, 0.6);
+		animation: pulse 2s infinite;
+	}
+
+	@keyframes pulse {
+		0% { text-shadow: 0 0 10px rgba(192, 255, 62, 0.4); }
+		50% { text-shadow: 0 0 15px rgba(192, 255, 62, 0.7); }
+		100% { text-shadow: 0 0 10px rgba(192, 255, 62, 0.4); }
+	}
+
 	.bingo-board {
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
 		gap: 5px;
 		margin-top: 20px;
+		width: 100%;
 	}
 
 	.word {
-		padding: 15px;
+		padding: 15px 5px;
 		text-align: center;
-		border: 2px solid #2ecc71;
-		background-color: #121212;
-		color: #d4ffd4;
-		font-size: 1rem;
+		border: 2px solid var(--lemon-green);
+		background-color: var(--dark-bg);
+		color: var(--text-color);
+		font-size: 0.9rem;
+		font-family: 'Montserrat', Arial, sans-serif;
 		cursor: pointer;
 		transition:
-			background-color 0.3s,
-			transform 0.3s;
+			all 0.3s;
+		height: 70px;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.word:hover:not(.crossed-out) {
+		box-shadow: 0 0 8px rgba(192, 255, 62, 0.5);
+		text-shadow: 0 0 8px rgba(192, 255, 62, 0.5);
 	}
 
 	.word.crossed-out {
-		background-color: #2ecc71;
-		color: #121212;
+		background-color: var(--lemon-green);
+		color: var(--dark-bg);
 		text-decoration: line-through;
-		transform: scale(1.1);
+		transform: scale(1.05);
+		font-weight: 600;
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.6);
 	}
 
 	.bingo {
-		color: limegreen;
+		color: var(--lemon-green);
 		font-size: 1.5rem;
 		margin-top: 20px;
+		text-align: center;
+		font-weight: 700;
+		text-shadow: 0 0 15px rgba(192, 255, 62, 0.8);
+		animation: winGlow 1.5s infinite alternate;
+	}
+
+	@keyframes winGlow {
+		from { text-shadow: 0 0 10px rgba(192, 255, 62, 0.5); }
+		to { text-shadow: 0 0 20px rgba(192, 255, 62, 1); }
 	}
 
 	.players-list {
 		margin-top: 20px;
+		width: 100%;
 	}
 
 	.player-item {
@@ -219,19 +294,50 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		font-family: 'Montserrat', Arial, sans-serif;
+	}
+
+	.current-player {
+		color: var(--lemon-green);
+		font-weight: 600;
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.4);
 	}
 
 	.spectate-button {
-		background-color: #2ecc71;
+		background-color: var(--lemon-green);
 		border: none;
 		padding: 5px 10px;
 		cursor: pointer;
-		color: #121212;
+		color: var(--dark-bg);
 		font-size: 0.9rem;
+		font-weight: 600;
 		border-radius: 5px;
 	}
 
 	.spectate-button:hover {
-		background-color: #00ff00;
+		background-color: #a0df1e;
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.7);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+	}
+	
+	.auth-error {
+		text-align: center;
+		padding: 2rem;
+	}
+	
+	.auth-error a {
+		display: inline-block;
+		margin-top: 1rem;
+		padding: 0.5rem 1rem;
+		background-color: var(--lemon-green);
+		color: var(--dark-bg);
+		text-decoration: none;
+		border-radius: 5px;
+		font-weight: 600;
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+	}
+
+	.auth-error a:hover {
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.7);
 	}
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { db, collection, query, where, getDocs } from '$lib/firebase';
 	import { user } from '$lib/store';
 	import Loader from '../../components/Loader.svelte';
@@ -9,12 +9,17 @@
 	let joinedGames = [];
 	let error = '';
 	let isLoading = true;
+	let unsubscribe;
 
 	$: user.subscribe((u) => {
 		currentUser = u;
 	});
 
 	onMount(async () => {
+		unsubscribe = user.subscribe((u) => {
+			currentUser = u;
+		});
+
 		if (!currentUser) {
 			error = 'You must be logged in to view the dashboard.';
 			isLoading = false;
@@ -46,6 +51,10 @@
 		}
 	});
 
+	onDestroy(() => {
+		if (unsubscribe) unsubscribe();
+	});
+
 	function openGame(gameId: string) {
 		goto(`/game/${gameId}`);
 	}
@@ -71,7 +80,7 @@
 							<p>Player Progress:</p>
 							<ul>
 								{#each game.players as player}
-									<li>
+									<li class={player.id === currentUser?.uid ? 'current-player' : ''}>
 										{player.name || 'Unknown'} – {player.crossedOut?.length || 0} words crossed out
 									</li>
 								{/each}
@@ -88,9 +97,18 @@
 </div>
 
 <style>
+	h1 {
+		color: var(--lemon-green);
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.5);
+		font-family: 'Montserrat', Arial, sans-serif;
+		font-weight: 700;
+		text-align: center;
+	}
+
 	.error {
-		color: red;
+		color: #ff5555;
 		margin: 10px 0;
+		text-shadow: 0 0 10px rgba(255, 85, 85, 0.3);
 	}
 
 	.game-list {
@@ -101,35 +119,56 @@
 	.game-item {
 		margin-bottom: 15px;
 		padding: 10px;
-		border: 1px solid #2ecc71;
+		border: 1px solid var(--lemon-green);
 		border-radius: 5px;
-		background-color: #1e1e1e;
-		color: #d4ffd4;
+		background-color: var(--dark-card);
+		color: var(--text-color);
+		box-shadow: 0 0 8px rgba(192, 255, 62, 0.2);
+		transition: box-shadow 0.3s ease;
+	}
+
+	.game-item:hover {
+		box-shadow: 0 0 12px rgba(192, 255, 62, 0.4);
 	}
 
 	.game-item h3 {
 		margin: 0 0 5px 0;
 		font-size: 1.2rem;
-		color: limegreen;
+		color: var(--lemon-green);
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.4);
+		font-family: 'Montserrat', Arial, sans-serif;
+		font-weight: 600;
 	}
 
 	.game-item p {
 		margin: 5px 0;
 		font-size: 0.9rem;
+		font-family: 'Montserrat', Arial, sans-serif;
+	}
+
+	.current-player {
+		color: var(--lemon-green);
+		text-shadow: 0 0 10px rgba(192, 255, 62, 0.4);
+		font-weight: 500;
 	}
 
 	.open-game-button {
 		margin-top: 10px;
-		background-color: #2ecc71;
+		background-color: var(--lemon-green);
 		border: none;
-		padding: 5px 10px;
+		padding: 8px 12px;
 		cursor: pointer;
-		color: white;
+		color: var(--dark-bg);
 		font-size: 0.9rem;
+		font-weight: 600;
 		border-radius: 5px;
+		font-family: 'Montserrat', Arial, sans-serif;
+		transition: all 0.3s ease;
 	}
 
 	.open-game-button:hover {
-		background-color: #27ae60;
+		background-color: #a0df1e;
+		box-shadow: 0 0 10px rgba(192, 255, 62, 0.7);
+		text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 	}
 </style>
