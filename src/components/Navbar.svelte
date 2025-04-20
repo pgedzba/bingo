@@ -45,35 +45,46 @@
 		</div>
 
 		<!-- Mobile Menu Toggle Button -->
-		<button class="menu-toggle" aria-label="Toggle Menu" on:click={() => (isMenuOpen = !isMenuOpen)}>
-			<span class="menu-icon"></span>
-		</button>
+		{#if isBrowser && currentUser}
+			<button
+				class="menu-toggle"
+				aria-label="Toggle Menu"
+				on:click={() => (isMenuOpen = !isMenuOpen)}
+			>
+				<span class="menu-icon"></span>
+			</button>
+		{/if}
 
 		<!-- Navigation Links -->
 		<div class="nav-container" class:open={isMenuOpen}>
-			<ul class="nav-links">
-				<li><a href="/dashboard" class="nav-link">Dashboard</a></li>
-				<li><a href="/joingame" class="nav-link">Join Game</a></li>
-				<li><a href="/creategame" class="nav-link">Create Game</a></li>
-			</ul>
+				<ul class="nav-links">
+					{#if isBrowser && currentUser}
+					<li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+					<li><a href="/joingame" class="nav-link">Join Game</a></li>
+					<li><a href="/creategame" class="nav-link">Create Game</a></li>
+					{/if}
+				</ul>
 
 			<!-- User Actions -->
 			<div class="user-actions">
 				{#if isBrowser && currentUser}
 					<!-- User Info -->
 					<div class="user-info">
-						<div class="avatar">
-							{#if currentUser.photoURL}
-								<img src={currentUser.photoURL} alt="Profile" />
-							{:else}
-								<div class="avatar-letter">{(currentUser.displayName || currentUser.email || '?')[0].toUpperCase()}</div>
-							{/if}
-						</div>
 						<div class="user-dropdown">
 							<span class="username">{currentUser.displayName || currentUser.email}</span>
 							<div class="dropdown-content">
 								<button class="dropdown-item" on:click={handleLogout}>
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
 										<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
 										<polyline points="16 17 21 12 16 7"></polyline>
 										<line x1="21" y1="12" x2="9" y2="12"></line>
@@ -209,32 +220,6 @@
 		align-items: center;
 		position: relative;
 	}
-
-	.avatar {
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		margin-right: 0.75rem;
-		background-color: var(--lemon-green);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: var(--dark-bg);
-		font-weight: 600;
-		font-size: 0.85rem;
-		overflow: hidden;
-	}
-
-	.avatar img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.avatar-letter {
-		font-weight: 700;
-	}
-
 	.user-dropdown {
 		position: relative;
 		cursor: pointer;

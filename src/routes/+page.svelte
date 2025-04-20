@@ -2,21 +2,8 @@
 	import { user } from '$lib/store';
 	import { loginWithGoogle } from '$lib/firebase';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 
 	let isLoading = false;
-	
-	// Redirect to dashboard if already logged in
-	onMount(() => {
-		const unsubscribe = user.subscribe((u) => {
-			if (u) {
-				// Wait a moment to avoid flickering
-				setTimeout(() => goto('/dashboard'), 500);
-			}
-		});
-		
-		return unsubscribe;
-	});
 
 	async function handleLogin() {
 		try {
@@ -28,6 +15,45 @@
 			isLoading = false;
 		}
 	}
+
+	function shuffleArray(array) {
+		const shuffled = [...array];
+
+		for (let i = shuffled.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+		}
+
+		return shuffled;
+	}
+
+	const bingoItems = shuffleArray([
+		'Free Space',
+		'Late arrival',
+		'Coffee spill',
+		'Technical issues',
+		"Someone's pet appears",
+		'Awkward silence',
+		'"Can everyone see my screen?"',
+		'Background noise',
+		'"You\'re on mute"',
+		'Email notification sound',
+		'Weather small talk',
+		'Internet drops',
+		'Someone leaves early',
+		'Double-booked room',
+		'"Let\'s circle back"',
+		'Unexpected guest',
+		'Phone rings',
+		'"Sorry, I was multitasking"',
+		'Someone eating lunch',
+		'Doorbell interruption',
+		'"Let\'s take this offline"',
+		'Surprise deadline',
+		'Mandatory fun activity',
+		'"Any questions?" *silence*',
+		'Meeting runs over time'
+	]);
 </script>
 
 <div class="home-page">
@@ -37,27 +63,42 @@
 				<div class="logo-badge">B</div>
 				<h1 class="logo-text">Bingo</h1>
 			</div>
-			
+
 			<h2 class="tagline">Create and play interactive bingo games with friends</h2>
-			
+
 			<div class="description">
 				<p>
-					A fun way to make meetings, events, and gatherings more engaging.
-					Create custom bingo cards, share with participants, and track progress in real-time.
+					A fun way to make meetings, events, and gatherings more engaging. Create custom bingo
+					cards, share with participants, and track progress in real-time.
 				</p>
 			</div>
-			
+
 			<div class="actions">
 				{#if $user}
 					<button class="primary-button" on:click={() => goto('/dashboard')}>
 						Go to Dashboard
 					</button>
 				{:else}
-					<button class="primary-button" class:loading={isLoading} on:click={handleLogin} disabled={isLoading}>
+					<button
+						class="primary-button"
+						class:loading={isLoading}
+						on:click={handleLogin}
+						disabled={isLoading}
+					>
 						{#if isLoading}
 							<div class="button-loader"></div>
 						{:else}
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"></path>
 								<path d="M12 8v8"></path>
 								<path d="M8 12h8"></path>
@@ -82,24 +123,45 @@
 					<div class="bingo-grid">
 						{#each Array(25) as _, i}
 							<div class="bingo-cell {Math.random() > 0.7 ? 'crossed' : ''}">
-								<span class="cell-text">Item {i + 1}</span>
+								<span class="cell-text">{bingoItems[i]}</span>
 							</div>
 						{/each}
 					</div>
 				</div>
-				
+
 				<div class="feature-cards">
 					<div class="feature-card">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+							></path>
 							<path d="m9 12 2 2 4-4"></path>
 						</svg>
 						<h3>Easy Setup</h3>
 						<p>Create a new game in seconds with our intuitive interface.</p>
 					</div>
-					
+
 					<div class="feature-card">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
 							<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
 							<circle cx="9" cy="7" r="4"></circle>
 							<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -108,9 +170,19 @@
 						<h3>Multiplayer</h3>
 						<p>Invite friends to join your game with a simple 5-letter code.</p>
 					</div>
-					
+
 					<div class="feature-card">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
 							<circle cx="12" cy="12" r="10"></circle>
 							<polyline points="12 6 12 12 16 14"></polyline>
 						</svg>
@@ -414,7 +486,11 @@
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 </style>

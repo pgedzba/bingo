@@ -2,7 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { subscribeToGame, gameData, db, updateDoc, doc } from '$lib/firebase';
 	import { user } from '$lib/store';
-	import Loader from '../../components/Loader.svelte';
+	import Loader from '../../../components/Loader.svelte';
 
 	export let data;
 	const { gameCode } = data;
