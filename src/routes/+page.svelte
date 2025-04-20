@@ -128,67 +128,82 @@
 						{/each}
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Move feature cards to their own section below -->
+	<div class="features-section">
+		<div class="features-container">
+			<div class="feature-card">
+				<div class="feature-icon">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+						></path>
+						<path d="m9 12 2 2 4-4"></path>
+					</svg>
+				</div>
+				<div class="feature-content">
+					<h3>Easy Setup</h3>
+					<p>Create a new game in seconds with our intuitive interface.</p>
+				</div>
+			</div>
 
-				<div class="feature-cards">
-					<div class="feature-card">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-							></path>
-							<path d="m9 12 2 2 4-4"></path>
-						</svg>
-						<h3>Easy Setup</h3>
-						<p>Create a new game in seconds with our intuitive interface.</p>
-					</div>
+			<div class="feature-card">
+				<div class="feature-icon">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+						<circle cx="9" cy="7" r="4"></circle>
+						<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+						<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+					</svg>
+				</div>
+				<div class="feature-content">
+					<h3>Multiplayer</h3>
+					<p>Invite friends to join your game with a simple 5-letter code.</p>
+				</div>
+			</div>
 
-					<div class="feature-card">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-							<circle cx="9" cy="7" r="4"></circle>
-							<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-							<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-						</svg>
-						<h3>Multiplayer</h3>
-						<p>Invite friends to join your game with a simple 5-letter code.</p>
-					</div>
-
-					<div class="feature-card">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<circle cx="12" cy="12" r="10"></circle>
-							<polyline points="12 6 12 12 16 14"></polyline>
-						</svg>
-						<h3>Real-time</h3>
-						<p>Watch as players mark their boards in real-time.</p>
-					</div>
+			<div class="feature-card">
+				<div class="feature-icon">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<circle cx="12" cy="12" r="10"></circle>
+						<polyline points="12 6 12 12 16 14"></polyline>
+					</svg>
+				</div>
+				<div class="feature-content">
+					<h3>Real-time</h3>
+					<p>Watch as players mark their boards in real-time.</p>
 				</div>
 			</div>
 		</div>
@@ -200,9 +215,7 @@
 		min-height: calc(100vh - 64px);
 		background: linear-gradient(to bottom, var(--dark-bg), rgba(30, 30, 30, 0.9));
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 2rem 1rem;
+		flex-direction: column;
 	}
 
 	.hero-container {
@@ -212,6 +225,7 @@
 		max-width: 1200px;
 		margin: 0 auto;
 		gap: 4rem;
+		padding: 4rem 1rem;
 	}
 
 	.hero-content {
@@ -392,55 +406,72 @@
 		text-align: center;
 	}
 
-	.feature-cards {
-		position: absolute;
-		top: 40px;
-		right: -40px;
+	/* New features section styles */
+	.features-section {
+		padding: 3rem 1rem 5rem;
+		background: linear-gradient(to bottom, transparent, rgba(18, 18, 18, 0.8));
+	}
+
+	.features-container {
+		max-width: 1200px;
+		margin: 0 auto;
 		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		z-index: 5;
+		justify-content: center;
+		gap: 2rem;
 	}
 
 	.feature-card {
 		background-color: var(--dark-card);
-		border-radius: 12px;
-		padding: 1rem;
-		width: 220px;
-		box-shadow: var(--shadow-md);
+		border-radius: 16px;
+		padding: 1.5rem;
+		width: 100%;
+		max-width: 300px;
+		box-shadow: var(--shadow-lg);
 		border: 1px solid rgba(255, 255, 255, 0.05);
-		transform: rotate(-5deg);
+		display: flex;
+		flex-direction: column;
+		transition: all 0.3s ease;
 	}
 
-	.feature-card:nth-child(2) {
-		transform: rotate(-3deg) translateY(-10px);
+	.feature-card:hover {
+		transform: translateY(-5px);
+		box-shadow: var(--shadow-lg), var(--glow-sm);
+		border-color: rgba(192, 255, 62, 0.2);
 	}
 
-	.feature-card:nth-child(3) {
-		transform: rotate(-8deg) translateY(-20px);
+	.feature-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 60px;
+		height: 60px;
+		border-radius: 12px;
+		background-color: rgba(192, 255, 62, 0.1);
+		margin-bottom: 1.25rem;
 	}
 
-	.feature-card svg {
+	.feature-icon svg {
 		color: var(--lemon-green);
-		margin-bottom: 0.75rem;
 	}
 
-	.feature-card h3 {
-		font-size: 1rem;
-		margin-bottom: 0.5rem;
+	.feature-content h3 {
+		font-size: 1.25rem;
+		margin-bottom: 0.75rem;
 		color: var(--text-color);
 	}
 
-	.feature-card p {
-		font-size: 0.85rem;
+	.feature-content p {
+		font-size: 1rem;
 		color: var(--text-secondary);
 		margin: 0;
+		line-height: 1.5;
 	}
 
 	@media (max-width: 1024px) {
 		.hero-container {
 			flex-direction: column-reverse;
 			gap: 2rem;
+			padding-bottom: 2rem;
 		}
 
 		.hero-content {
@@ -459,29 +490,16 @@
 		.tagline {
 			font-size: 1.5rem;
 		}
-
-		.feature-cards {
-			right: -20px;
-		}
 	}
 
-	@media (max-width: 640px) {
-		.feature-cards {
-			position: static;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			margin-top: 2rem;
+	@media (max-width: 768px) {
+		.features-container {
+			flex-direction: column;
+			align-items: center;
 		}
 
 		.feature-card {
-			transform: none !important;
-			width: 100%;
-			max-width: 300px;
-		}
-
-		.bingo-card {
-			transform: none;
+			max-width: 400px;
 		}
 	}
 

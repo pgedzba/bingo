@@ -36,7 +36,7 @@
 			gameState = null;
 			return;
 		}
-		
+
 		isLoading = false;
 		gameState = data;
 		if (!currentUser) return;
@@ -124,6 +124,11 @@
 	function togglePlayersList() {
 		showPlayersList = !showPlayersList;
 	}
+
+	// Add function to close the bingo celebration modal
+	function closeBingoModal() {
+		bingoAchieved = false;
+	}
 </script>
 
 <div class="game-page">
@@ -134,10 +139,23 @@
 				<div class="game-name">{gameState.gameName}</div>
 			{/if}
 		</div>
-		
+
 		<div class="game-actions">
 			<button class="players-toggle" on:click={togglePlayersList}>
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"
+					></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"
+					></path></svg
+				>
 				Players
 			</button>
 		</div>
@@ -150,7 +168,17 @@
 	{:else if !currentUser}
 		<div class="auth-message">
 			<div class="auth-card">
-				<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="48"
+					height="48"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
 					<circle cx="12" cy="12" r="10"></circle>
 					<line x1="12" y1="8" x2="12" y2="12"></line>
 					<line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -166,13 +194,33 @@
 				<div class="board-header">
 					{#if spectatingPlayer}
 						<div class="spectating-badge">
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
 								<circle cx="12" cy="12" r="3"></circle>
 							</svg>
 							Viewing {spectatingPlayer.name}'s Board
 							<button class="return-button" on:click={returnToOwnBoard}>
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
 									<path d="M19 12H5"></path>
 									<polyline points="12 19 5 12 12 5"></polyline>
 								</svg>
@@ -184,7 +232,10 @@
 						<div class="progress-indicator">
 							<div class="progress-text">{crossedOut.length}/{board.length} crossed</div>
 							<div class="progress-bar">
-								<div class="progress-fill" style="width: {(crossedOut.length / board.length) * 100}%"></div>
+								<div
+									class="progress-fill"
+									style="width: {(crossedOut.length / board.length) * 100}%"
+								></div>
 							</div>
 						</div>
 					{/if}
@@ -205,7 +256,17 @@
 							<span class="cell-content">{word}</span>
 							{#if crossedOut.includes(word)}
 								<span class="cell-check">
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="24"
+										height="24"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="3"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
 										<polyline points="20 6 9 17 4 12"></polyline>
 									</svg>
 								</span>
@@ -217,11 +278,43 @@
 				{#if bingoAchieved}
 					<div class="bingo-celebration">
 						<div class="bingo-alert">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<button
+								class="close-modal"
+								on:click={closeBingoModal}
+								aria-label="Close bingo celebration modal"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<line x1="18" y1="6" x2="6" y2="18"></line>
+									<line x1="6" y1="6" x2="18" y2="18"></line>
+								</svg>
+							</button>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
 								<path d="M6 10c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h3c1.1 0 2 .9 2 2"></path>
 								<path d="M6 19c-1.1 0-2-.9-2-2v-3c0-1.1.9-2 2-2"></path>
 								<path d="M15 5c0-1.1.9-2 2-2h3c1.1 0 2.9 2 2 2v3c0 1.1-.9 2-2 2"></path>
-								<path d="M18 19c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2h-3c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h3z"></path>
+								<path
+									d="M18 19c1.1 0 2-.9 2-2v-3c0-1.1-.9-2-2-2h-3c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h3z"
+								></path>
 								<line x1="10" y1="9" x2="14" y2="15"></line>
 								<line x1="14" y1="9" x2="10" y2="15"></line>
 							</svg>
@@ -236,17 +329,31 @@
 				<div class="sidebar-header">
 					<h3>Players</h3>
 					<button class="close-sidebar" on:click={togglePlayersList}>
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
 							<line x1="18" y1="6" x2="6" y2="18"></line>
 							<line x1="6" y1="6" x2="18" y2="18"></line>
 						</svg>
 					</button>
 				</div>
-				
+
 				<div class="players-list">
 					{#if gameState?.players?.length}
 						{#each gameState.players as otherPlayer}
-							<div class="player-card {otherPlayer.id === currentUser?.uid ? 'current-player' : ''} {spectatingPlayer?.id === otherPlayer.id ? 'active-spectate' : ''}">
+							<div
+								class="player-card {otherPlayer.id === currentUser?.uid
+									? 'current-player'
+									: ''} {spectatingPlayer?.id === otherPlayer.id ? 'active-spectate' : ''}"
+							>
 								<div class="player-info">
 									<div class="player-avatar">
 										{otherPlayer.name[0].toUpperCase()}
@@ -260,16 +367,22 @@
 										</div>
 										<div class="player-progress">
 											<div class="progress-bar">
-												<div class="progress-fill" style="width: {((otherPlayer.crossedOut?.length || 0) / board.length) * 100}%"></div>
+												<div
+													class="progress-fill"
+													style="width: {((otherPlayer.crossedOut?.length || 0) / board.length) *
+														100}%"
+												></div>
 											</div>
-											<div class="progress-text">{otherPlayer.crossedOut?.length || 0}/{board.length}</div>
+											<div class="progress-text">
+												{otherPlayer.crossedOut?.length || 0}/{board.length}
+											</div>
 										</div>
 									</div>
 								</div>
-								
+
 								{#if otherPlayer.id !== currentUser?.uid}
-									<button 
-										class="spectate-button" 
+									<button
+										class="spectate-button"
 										class:active={spectatingPlayer?.id === otherPlayer.id}
 										on:click={() => spectatePlayer(otherPlayer.id)}
 									>
@@ -290,7 +403,17 @@
 		</div>
 	{:else}
 		<div class="empty-state">
-			<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="64"
+				height="64"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
 				<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
 				<path d="M13 2v7h7"></path>
 			</svg>
@@ -327,13 +450,18 @@
 	}
 
 	.players-toggle {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		background-color: transparent;
-		border: 1px solid var(--lemon-green);
-		color: var(--lemon-green);
-		font-weight: 500;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			background-color: transparent;
+			border: 1px solid var(--lemon-green);
+			color: var(--lemon-green);
+			font-weight: 500;
+		}
+	@media (min-width: 769px) {
+		.players-toggle {
+			display: none;
+		}
 	}
 
 	.players-toggle:hover {
@@ -523,6 +651,30 @@
 		max-width: 400px;
 		box-shadow: var(--shadow-lg), var(--glow-lg);
 		animation: popIn 0.5s ease forwards;
+		position: relative;
+	}
+
+	.close-modal {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		background: transparent;
+		border: none;
+		color: var(--text-secondary);
+		padding: 0.25rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: none;
+	}
+
+	.close-modal:hover {
+		color: var(--text-color);
+		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: none;
 	}
 
 	.bingo-alert svg {
@@ -540,14 +692,26 @@
 	}
 
 	@keyframes fadeIn {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 
 	@keyframes popIn {
-		0% { transform: scale(0.8); opacity: 0; }
-		70% { transform: scale(1.05); }
-		100% { transform: scale(1); opacity: 1; }
+		0% {
+			transform: scale(0.8);
+			opacity: 0;
+		}
+		70% {
+			transform: scale(1.05);
+		}
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
 	}
 
 	.players-sidebar {

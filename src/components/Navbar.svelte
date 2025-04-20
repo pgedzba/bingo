@@ -1,9 +1,9 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import { logout, user } from '$lib/store';
-	import { goto } from '$app/navigation';
 
 	let isMenuOpen = false;
+	let isDropdownOpen = false; // New state to track dropdown visibility
 	let currentUser = null;
 	let isBrowser = false;
 	let unsubscribe;
@@ -18,12 +18,18 @@
 
 		// Add scroll listener for navbar appearance change
 		window.addEventListener('scroll', handleScroll);
+		
+		// Close dropdown when clicking outside
+		window.addEventListener('click', handleOutsideClick);
 	});
 
 	// Clean up subscription when component is destroyed
 	onDestroy(() => {
 		if (unsubscribe) unsubscribe();
-		if (isBrowser) window.removeEventListener('scroll', handleScroll);
+		if (isBrowser) {
+			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('click', handleOutsideClick);
+		}
 	});
 
 	function handleScroll() {
@@ -32,6 +38,21 @@
 
 	function handleLogout() {
 		if (isBrowser) logout(); // Logout only in the browser
+		isDropdownOpen = false; // Close dropdown after logout
+	}
+	
+	// Toggle dropdown visibility
+	function toggleDropdown(event) {
+		event.stopPropagation(); // Prevent event from bubbling to window
+		isDropdownOpen = !isDropdownOpen;
+	}
+	
+	// Close dropdown when clicking outside
+	function handleOutsideClick(event) {
+		const dropdown = document.querySelector('.user-dropdown');
+		if (dropdown && !dropdown.contains(event.target)) {
+			isDropdownOpen = false;
+		}
 	}
 </script>
 
@@ -71,8 +92,25 @@
 					<!-- User Info -->
 					<div class="user-info">
 						<div class="user-dropdown">
-							<span class="username">{currentUser.displayName || currentUser.email}</span>
-							<div class="dropdown-content">
+							<button class="username-button" on:click={toggleDropdown}>
+								<span class="username">{currentUser.displayName || currentUser.email}</span>
+								<svg 
+									class="dropdown-arrow" 
+									class:open={isDropdownOpen}
+									xmlns="http://www.w3.org/2000/svg" 
+									width="16" 
+									height="16" 
+									viewBox="0 0 24 24" 
+									fill="none" 
+									stroke="currentColor" 
+									stroke-width="2" 
+									stroke-linecap="round" 
+									stroke-linejoin="round"
+								>
+									<polyline points="6 9 12 15 18 9"></polyline>
+								</svg>
+							</button>
+							<div class="dropdown-content" class:visible={isDropdownOpen}>
 								<button class="dropdown-item" on:click={handleLogout}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -94,9 +132,6 @@
 							</div>
 						</div>
 					</div>
-				{:else}
-					<!-- Login/Register Button -->
-					<button class="login-button" on:click={() => goto('/')}>Sign In</button>
 				{/if}
 			</div>
 		</div>
@@ -220,9 +255,26 @@
 		align-items: center;
 		position: relative;
 	}
+	
 	.user-dropdown {
 		position: relative;
 		cursor: pointer;
+	}
+
+	.username-button {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		background: transparent;
+		border: none;
+		padding: 0.5rem;
+		border-radius: var(--button-radius);
+		transition: background-color 0.2s ease;
+	}
+	
+	.username-button:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+		box-shadow: none;
 	}
 
 	.username {
@@ -233,8 +285,19 @@
 		max-width: 150px;
 		transition: color 0.3s ease;
 	}
+	
+	.dropdown-arrow {
+		color: var(--text-secondary);
+		transition: transform 0.3s ease;
+	}
+	
+	.dropdown-arrow.open {
+		transform: rotate(180deg);
+		color: var(--lemon-green);
+	}
 
-	.user-dropdown:hover .username {
+	.username-button:hover .username,
+	.username-button:focus .username {
 		color: var(--lemon-green);
 	}
 
@@ -250,10 +313,15 @@
 		overflow: hidden;
 		z-index: 10;
 		border: 1px solid rgba(255, 255, 255, 0.05);
+		opacity: 0;
+		transform: translateY(-10px);
+		transition: opacity 0.2s ease, transform 0.2s ease;
 	}
-
-	.user-dropdown:hover .dropdown-content {
+	
+	.dropdown-content.visible {
 		display: block;
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	.dropdown-item {
