@@ -144,13 +144,25 @@
 		top: 0;
 		z-index: 100;
 		padding: 0.75rem 0;
-		background-color: rgba(18, 18, 18, 0.7);
-		backdrop-filter: blur(10px);
 		transition: all 0.3s ease;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		/* Removed background/filter/border from here to avoid containing block for fixed children */
 	}
 
-	.navbar.scrolled {
+	.navbar::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: -2;
+		background-color: rgba(18, 18, 18, 0.7);
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+	}
+
+	.navbar.scrolled::before {
 		background-color: rgba(18, 18, 18, 0.95);
 		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	}
@@ -270,6 +282,7 @@
 		padding: 0.5rem;
 		border-radius: var(--button-radius);
 		transition: background-color 0.2s ease;
+		color: var(--text-color); /* Explicit color to prevent inheritance issues */
 	}
 	
 	.username-button:hover {
@@ -400,43 +413,84 @@
 		}
 
 		.nav-container {
-			position: absolute;
-			top: 100%;
-			left: 0;
-			right: 0;
-			background-color: var(--dark-card);
-			padding: 1rem;
+			position: fixed;
+			top: 0;
+			left: 50%;
+			bottom: 0;
+			right: auto;
+			transform: translateX(-50%);
+			height: 100vh;
+			width: 100vw;
+			background-color: rgba(18, 18, 18, 0.95);
+			backdrop-filter: blur(10px);
+			padding: 6rem 1.5rem 2rem; /* Top padding to clear navbar */
 			flex-direction: column;
-			align-items: stretch;
-			clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-			transition: clip-path 0.3s ease;
+			align-items: center;
+			justify-content: flex-start;
+			clip-path: circle(0% at 100% 0%); /* Circular reveal from top right */
+			transition: clip-path 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+			z-index: -1; /* Behind the navbar content (toggle button) */
 		}
 
 		.nav-container.open {
-			clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-			box-shadow: var(--shadow-lg);
+			clip-path: circle(150% at 100% 0%);
 		}
 
 		.nav-links {
 			flex-direction: column;
-			gap: 0.5rem;
+			gap: 1.5rem;
 			width: 100%;
-			margin-bottom: 1rem;
+			margin-bottom: 2rem;
+			text-align: center;
 		}
 
 		.nav-link {
 			display: block;
-			padding: 0.75rem 0;
+			padding: 0.5rem 0;
+			font-size: 1.25rem;
 		}
 
 		.user-actions {
 			width: 100%;
 			justify-content: center;
+			flex-direction: column;
+			gap: 1rem;
 		}
 
 		.user-info {
 			width: 100%;
 			justify-content: center;
+		}
+		
+		.user-dropdown {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		
+		.username-button {
+			font-size: 1.1rem;
+			justify-content: center;
+		}
+		
+		.dropdown-content {
+			position: static;
+			width: 100%;
+			background-color: transparent;
+			box-shadow: none;
+			border: none;
+			opacity: 1;
+			transform: none;
+			display: block;
+			padding-top: 1rem;
+			border-top: 1px solid rgba(255,255,255,0.1);
+			margin-top: 1rem;
+		}
+		
+		.dropdown-item {
+			justify-content: center;
+			font-size: 1rem;
 		}
 	}
 </style>
