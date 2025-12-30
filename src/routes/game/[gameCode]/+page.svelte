@@ -253,7 +253,9 @@
 							}}
 						>
 							<span class="cell-number">{index + 1}</span>
-							<span class="cell-content">{word}</span>
+							<div class="cell-content">
+								<span class:scroll-text={word.length > 8}>{word}</span>
+							</div>
 							{#if crossedOut.includes(word)}
 								<span class="cell-check">
 									<svg
@@ -594,6 +596,7 @@
 		max-height: 100%;
 		overflow: hidden;
 		padding: 0.5rem;
+		color: white; /* Fix for dark text */
 	}
 
 	.bingo-cell.crossed {
@@ -992,10 +995,35 @@
 
 		.bingo-cell {
 			font-size: 0.75rem;
+			padding: 0.25rem; /* Reduced padding */
+		}
+		
+		.cell-content {
+			padding: 0.1rem; /* Reduced padding for more space */
 		}
 
 		.bingo-board {
 			gap: 0.35rem;
+		}
+
+		/* Sliding text for mobile */
+		.scroll-text {
+			display: inline-block;
+			white-space: nowrap;
+			animation: scroll-left 6s linear infinite alternate;
+		}
+
+		@keyframes scroll-left {
+			0%, 15% {
+				transform: translateX(0);
+			}
+			85%, 100% {
+				/* Slide to show the end. Assuming approx width, but percentages work on the element itself.
+				   If element is wider than container, -50% might not be enough or too much.
+				   A safe bet for typical bingo words is standard translation. 
+				*/
+				transform: translateX(calc(-100% + 45px)); /* Leave some visible */
+			}
 		}
 	}
 </style>
