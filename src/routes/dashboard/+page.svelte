@@ -172,7 +172,7 @@
 							</div>
 							<div class="stat">
 								<div class="stat-label">Your Progress</div>
-								<div class="stat-value">{game.crossedCount}/{game.totalItems}</div>
+								<div class="stat-value">{game.crossedCount}/25</div>
 							</div>
 						</div>
 						
@@ -200,7 +200,7 @@
 										{/if}
 									</div>
 									<div class="player-score">
-										{player.crossedOut?.length || 0}/{game.totalItems}
+										{player.crossedOut?.length || 0}/25
 									</div>
 								</li>
 							{/each}
